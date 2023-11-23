@@ -1,0 +1,32 @@
+{
+  "ModuleName": "ACTIONRPG",
+  "ClassName": "ARPG_CustomAttributeSet",
+  "ParentClassName": "GGA_AttributeSet",
+  "TagPrefix": "ActionRpg.Attribute.",
+  "Category": "Attributes",
+  "FileName": "ARPG_CustomAttributeSet",
+  "CopyRight": "// GAS AttributeSet 自动生成",
+  "HeaderIncludes": [
+    "CoreMinimal.h",
+    "Attributes/GGA_AttributeSet.h"
+  ],
+  "HeaderOutputDirectory": "./",
+  "CppOutputDirectory": "./",
+  "CppIncludes": [
+    "Attributes/ARPG_CustomAttributeSet.h",
+    "Net/UnrealNetwork.h"
+  ],
+  "Attributes": [
+    {
+      "Name": "FirePower",
+      "Default": 100
+    },
+    {
+      "Name": "IcePower",
+      "Default": 10
+    },
+    {
+      "Name": "AttackPower"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{{.CopyRight}}
+
+{{ range .CppIncludes }}
+#include "{{.}}"
+{{ end }}
+#include "AbilitySystemBlueprintLibrary.h"
+
+
+namespace {{.ClassName}}
+{
+{{ range .Attributes }}
+    UE_DEFINE_GAMEPLAY_TAG({{.Name}}, TEXT("{{ $.TagPrefix }}{{.Name}}"))
+{{ end }}
+}
+
+void U{{.ClassName}}::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    {{ range .Attributes }}
+    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, {{.Name}}, COND_OwnerOnly, REPNOTIFY_Always);
+    {{ end }}
+}
+
+{{ range .Attributes }}
+void U{{ $.ClassName }}::OnRep_{{ .Name }}(const FGameplayAttributeData& OldValue) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, {{ .Name }}, OldValue);
+}
+
+FGameplayAttribute U{{ $.ClassName }}::Bp_Get{{ .Name }}Attribute()
+{
+    return ThisClass::Get{{ .Name }}Attribute();
+}
+
+FGameplayTag U{{ $.ClassName }}::Bp_Get{{ .Name }}AttributeTag()
+{
+return {{$.ClassName}}::{{.Name}};
+}
+
+float U{{ $.ClassName }}::Get{{.Name}}AttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+{
+    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,Get{{.Name}}Attribute(),bSuccessfullyFoundAttribute);
+}
+{{ end }}

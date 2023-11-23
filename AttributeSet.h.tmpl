@@ -1,0 +1,47 @@
+{{.CopyRight}}
+
+#pragma once
+{{ range .HeaderIncludes }}
+#include "{{.}}"
+{{ end }}
+#include "{{.FileName}}.generated.h"
+
+namespace {{.ClassName}}
+{
+	{{ range .Attributes }}
+	{{ $.ModuleName }}_API UE_DECLARE_GAMEPLAY_TAG_EXTERN({{.Name}})
+	{{ end }}
+}
+
+UCLASS()
+class {{ .ModuleName }}_API U{{ .ClassName }} : public U{{.ParentClassName}}
+{
+	GENERATED_BODY()
+
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+	{{ range .Attributes }}
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_{{ .Name }}, Category = "{{ $.Category }}", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData {{ .Name }}{ {{ if ne .Default 0.0 }}{{ .Default }}{{ else }}0.0{{ end }} };
+	ATTRIBUTE_ACCESSORS(ThisClass, {{ .Name }})
+
+	{{ end }}
+
+	{{ range .Attributes }}
+	UFUNCTION()
+	void OnRep_{{ .Name }}(const FGameplayAttributeData& OldValue) const;
+
+	UFUNCTION(BlueprintPure,meta=(DisplayName="Get{{.Name}}Attribute"), Category = "{{ $.Category }}")
+	static FGameplayAttribute Bp_Get{{.Name}}Attribute();
+
+	UFUNCTION(BlueprintPure,meta=(DisplayName="Get{{.Name}}AttributeTag"), Category = "{{ $.Category }}")
+	static FGameplayTag Bp_Get{{.Name}}AttributeTag();
+
+	/** Returns the value of {{.Name}} Attribute from the ability system component belonging to Actor. */
+	UFUNCTION(BlueprintPure, Category = "Ability|Attribute")
+	static float Get{{.Name}}AttributeFromActor(const AActor* Actor,bool& bSuccessfullyFoundAttribute);
+
+	{{ end }}
+};
