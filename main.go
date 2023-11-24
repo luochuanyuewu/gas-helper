@@ -56,23 +56,6 @@ func ParseJSONFile(filePath string) (AttributeSet, error) {
 }
 
 func main() {
-	//// 定义属性集合
-	//attributes := []Attribute{
-	//	{Name: "HealthRegeneration"},
-	//	{Name: "ManaRegeneration"},
-	//	{Name: "StaminaRegeneration"},
-	//}
-	//
-	//// 定义属性集合对象
-	//attributeSet := AttributeSet{
-	//	Name:               "ARPG_TestAttributeSet",
-	//	Attributes:         attributes,
-	//	AttributeTagPrefix: "ActionRPG.Attribute.",
-	//	ModuleName:         "ACTIONRPG",
-	//	Category:           "ARPG_TestAttribute",
-	//	CopyRight:          "// Fill out your copyright notice in the Description page of Project Settings.",
-	//}
-
 	attributeSet, err := ParseJSONFile("data.json")
 	if err != nil {
 		// 处理错误
