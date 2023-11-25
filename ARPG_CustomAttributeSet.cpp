@@ -7,15 +7,16 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 
-
 namespace ARPG_CustomAttributeSet
 {
 
-    UE_DEFINE_GAMEPLAY_TAG(FirePower, TEXT("ActionRpg.Attribute.FirePower"))
+    UE_DEFINE_GAMEPLAY_TAG(Health, TEXT("ActionRpg.Attribute.Health"))
 
-    UE_DEFINE_GAMEPLAY_TAG(IcePower, TEXT("ActionRpg.Attribute.IcePower"))
+    UE_DEFINE_GAMEPLAY_TAG(MaxHealth, TEXT("ActionRpg.Attribute.MaxHealth"))
 
-    UE_DEFINE_GAMEPLAY_TAG(AttackPower, TEXT("ActionRpg.Attribute.AttackPower"))
+    UE_DEFINE_GAMEPLAY_TAG(Mana, TEXT("ActionRpg.Attribute.Mana"))
+
+    UE_DEFINE_GAMEPLAY_TAG(MaxMana, TEXT("ActionRpg.Attribute.MaxMana"))
 
 }
 
@@ -24,71 +25,142 @@ void UARPG_CustomAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProper
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     
-    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, FirePower, COND_OwnerOnly, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Health, COND_OwnerOnly, REPNOTIFY_Always);
     
-    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, IcePower, COND_OwnerOnly, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_OwnerOnly, REPNOTIFY_Always);
     
-    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, AttackPower, COND_OwnerOnly, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Mana, COND_OwnerOnly, REPNOTIFY_Always);
+    
+    DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxMana, COND_OwnerOnly, REPNOTIFY_Always);
     
 }
 
 
-void UARPG_CustomAttributeSet::OnRep_FirePower(const FGameplayAttributeData& OldValue) const
+void UARPG_CustomAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, FirePower, OldValue);
+	// This is called whenever attributes change, so for max health/mana we want to scale the current totals to match
+	Super::PreAttributeChange(Attribute, NewValue);
+
+    
+    if (Attribute == GetMaxHealthAttribute())
+    {
+        AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
+    }
+    
+
+    
+
+    
+    if (Attribute == GetMaxManaAttribute())
+    {
+        AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
+    }
+    
+
+    
+
 }
 
-FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetFirePowerAttribute()
+void UARPG_CustomAttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue,
+                                                   const FGameplayAttribute& AffectedAttributeProperty)
 {
-    return ThisClass::GetFirePowerAttribute();
+	UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
+	const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
+	if (!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
+	{
+		// Change current value to maintain the current Val / Max percent
+		const float CurrentValue = AffectedAttribute.GetCurrentValue();
+		float NewDelta = (CurrentMaxValue > 0.f) ? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue : NewMaxValue;
+
+		AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+	}
 }
 
-FGameplayTag UARPG_CustomAttributeSet::Bp_GetFirePowerAttributeTag()
+
+
+FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetHealthAttribute()
 {
-return ARPG_CustomAttributeSet::FirePower;
+    return ThisClass::GetHealthAttribute();
 }
 
-float UARPG_CustomAttributeSet::GetFirePowerAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+FGameplayTag UARPG_CustomAttributeSet::Bp_GetHealthAttributeTag()
 {
-    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetFirePowerAttribute(),bSuccessfullyFoundAttribute);
+return ARPG_CustomAttributeSet::Health;
 }
 
-void UARPG_CustomAttributeSet::OnRep_IcePower(const FGameplayAttributeData& OldValue) const
+float UARPG_CustomAttributeSet::GetHealthAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, IcePower, OldValue);
+    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetHealthAttribute(),bSuccessfullyFoundAttribute);
 }
 
-FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetIcePowerAttribute()
+void UARPG_CustomAttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue) const
 {
-    return ThisClass::GetIcePowerAttribute();
+    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Health, OldValue);
 }
 
-FGameplayTag UARPG_CustomAttributeSet::Bp_GetIcePowerAttributeTag()
+
+
+FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetMaxHealthAttribute()
 {
-return ARPG_CustomAttributeSet::IcePower;
+    return ThisClass::GetMaxHealthAttribute();
 }
 
-float UARPG_CustomAttributeSet::GetIcePowerAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+FGameplayTag UARPG_CustomAttributeSet::Bp_GetMaxHealthAttributeTag()
 {
-    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetIcePowerAttribute(),bSuccessfullyFoundAttribute);
+return ARPG_CustomAttributeSet::MaxHealth;
 }
 
-void UARPG_CustomAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldValue) const
+float UARPG_CustomAttributeSet::GetMaxHealthAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, AttackPower, OldValue);
+    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetMaxHealthAttribute(),bSuccessfullyFoundAttribute);
 }
 
-FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetAttackPowerAttribute()
+void UARPG_CustomAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const
 {
-    return ThisClass::GetAttackPowerAttribute();
+    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxHealth, OldValue);
 }
 
-FGameplayTag UARPG_CustomAttributeSet::Bp_GetAttackPowerAttributeTag()
+
+
+FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetManaAttribute()
 {
-return ARPG_CustomAttributeSet::AttackPower;
+    return ThisClass::GetManaAttribute();
 }
 
-float UARPG_CustomAttributeSet::GetAttackPowerAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+FGameplayTag UARPG_CustomAttributeSet::Bp_GetManaAttributeTag()
 {
-    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetAttackPowerAttribute(),bSuccessfullyFoundAttribute);
+return ARPG_CustomAttributeSet::Mana;
 }
+
+float UARPG_CustomAttributeSet::GetManaAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+{
+    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetManaAttribute(),bSuccessfullyFoundAttribute);
+}
+
+void UARPG_CustomAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Mana, OldValue);
+}
+
+
+
+FGameplayAttribute UARPG_CustomAttributeSet::Bp_GetMaxManaAttribute()
+{
+    return ThisClass::GetMaxManaAttribute();
+}
+
+FGameplayTag UARPG_CustomAttributeSet::Bp_GetMaxManaAttributeTag()
+{
+return ARPG_CustomAttributeSet::MaxMana;
+}
+
+float UARPG_CustomAttributeSet::GetMaxManaAttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)
+{
+    return UAbilitySystemBlueprintLibrary::GetFloatAttribute(Actor,GetMaxManaAttribute(),bSuccessfullyFoundAttribute);
+}
+
+void UARPG_CustomAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxMana, OldValue);
+}
+

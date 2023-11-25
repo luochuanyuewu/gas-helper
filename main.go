@@ -8,8 +8,9 @@ import (
 )
 
 type Attribute struct {
-	Name    string
-	Default float32
+	Name             string
+	Default          float32
+	MaxAttributeName string
 }
 
 type AttributeSet struct {

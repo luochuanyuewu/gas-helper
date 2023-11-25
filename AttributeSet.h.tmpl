@@ -19,7 +19,10 @@ class {{ .ModuleName }}_API U{{ .ClassName }} : public U{{.ParentClassName}}
 	GENERATED_BODY()
 
 public:
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 
 	{{ range .Attributes }}
@@ -31,7 +34,6 @@ public:
 
 	{{ range .Attributes }}
 	UFUNCTION()
-	void OnRep_{{ .Name }}(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION(BlueprintPure,meta=(DisplayName="Get{{.Name}}Attribute"), Category = "{{ $.Category }}")
 	static FGameplayAttribute Bp_Get{{.Name}}Attribute();
@@ -42,6 +44,18 @@ public:
 	/** Returns the value of {{.Name}} Attribute from the ability system component belonging to Actor. */
 	UFUNCTION(BlueprintPure, Category = "Ability|Attribute")
 	static float Get{{.Name}}AttributeFromActor(const AActor* Actor,bool& bSuccessfullyFoundAttribute);
+
+	{{ end }}
+
+protected:
+
+	/** Helper function to proportionally adjust the value of an attribute when it's associated max attribute changes. (i.e. When MaxHealth increases, Health increases by an amount that maintains the same percentage as before) */
+	virtual void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
+
+
+{{ range .Attributes }}
+	UFUNCTION()
+	virtual void OnRep_{{ .Name }}(const FGameplayAttributeData& OldValue) const;
 
 	{{ end }}
 };

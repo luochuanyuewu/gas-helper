@@ -6,10 +6,7 @@
   "Category": "Attributes",
   "FileName": "ARPG_CustomAttributeSet",
   "CopyRight": "// GAS AttributeSet 自动生成",
-  "HeaderIncludes": [
-    "CoreMinimal.h",
-    "Attributes/GGA_AttributeSet.h"
-  ],
+  "HeaderIncludes": ["CoreMinimal.h", "Attributes/GGA_AttributeSet.h"],
   "HeaderOutputDirectory": "./",
   "CppOutputDirectory": "./",
   "CppIncludes": [
@@ -18,15 +15,21 @@
   ],
   "Attributes": [
     {
-      "Name": "FirePower",
-      "Default": 100
+      "Name": "Health",
+      "Default": 100,
+      "MaxAttributeName": "MaxHealth"
     },
     {
-      "Name": "IcePower",
+      "Name": "MaxHealth",
       "Default": 10
     },
     {
-      "Name": "AttackPower"
+      "Name": "Mana",
+      "MaxAttributeName": "MaxMana"
+    },
+    {
+      "Name": "MaxMana",
+      "Default": 100
     }
   ]
 }
