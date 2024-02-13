@@ -1,0 +1,29 @@
+{
+  "ModuleName": "ACTIONRPG",
+  "ClassName": "AS_Mana",
+  "ParentClassName": "AttributeSet",
+  "TagPrefix": "ARPG.Attribute.ManaSet.",
+  "Category": "Attribute|ManaSet",
+  "FileName": "AS_Mana",
+  "CopyRight": "// GAS AttributeSet 自动生成",
+  "HeaderOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Public/Attributes",
+  "CppOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Private/Attributes",
+  "HeaderIncludes": [
+  ],
+  "CppIncludes": [
+    "Attributes/AS_Mana.h"
+  ],
+  "Attributes": [
+    {
+      "Name": "Mana",
+      "Default": 100,
+      "MaxAttributeName": "MaxMana",
+      "Comment": "Current mana of an actor.(actor的当前魔法值)"
+    },
+    {
+      "Name": "MaxMana",
+      "Default": 100,
+      "Comment": "Max mana value of an actor.(actor的最大魔法值)"
+    }
+  ]
+}

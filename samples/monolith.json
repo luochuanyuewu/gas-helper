@@ -1,0 +1,101 @@
+{
+  "ModuleName": "ACTIONRPG",
+  "ClassName": "ARPG_AttributeSet",
+  "ParentClassName": "AttributeSet",
+  "TagPrefix": "ARPG.Attribute.",
+  "Category": "RPGAttribute",
+  "FileName": "ARPG_AttributeSet",
+  "CopyRight": "// GAS AttributeSet 自动生成",
+  "HeaderOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Public/Attributes",
+  "CppOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Private/Attributes",
+  "HeaderIncludes": [
+  ],
+  "CppIncludes": [
+    "Attributes/ARPG_AttributeSet.h"
+  ],
+  "Attributes": [
+    {
+      "Name": "Strength",
+      "Comment": "力量，它影响角色的物理攻击力、近战伤害或武器伤害。"
+    },
+    {
+      "Name": "Intelligence",
+      "Comment": "智力，它影响角色的魔法攻击力、魔法防御力或使用魔法技能的效果。"
+    },
+    {
+      "Name": "Resilience",
+      "Comment": "韧性，它可以影响角色受到伤害时的减免效果、抵抗负面状态的能力或提高角色的生存能力。"
+    },
+    {
+      "Name": "Vigor",
+      "Comment": "活力，它可以影响角色的生命值（HP）或能量值（MP/SP），决定角色在战斗中的持久力和恢复能力。"
+    },
+    {
+      "Name": "Health",
+      "Default": 100,
+      "MaxAttributeName": "MaxHealth"
+    },
+    {
+      "Name": "MaxHealth",
+      "Default": 100
+    },
+    {
+      "Name": "Mana",
+      "Default": 100,
+      "MaxAttributeName": "MaxMana"
+    },
+    {
+      "Name": "MaxMana",
+      "Default": 100
+    },
+    {
+      "Name": "Stamina",
+      "Default": 100,
+      "MaxAttributeName": "MaxStamina"
+    },
+    {
+      "Name": "MaxStamina",
+      "Default": 100
+    },
+    {
+      "Name": "AttackPower",
+      "Default": 10
+    },
+    {
+      "Name": "DefensePower",
+      "Default": 10
+    },
+    {
+      "Name": "Poise",
+      "Default": 10
+    },
+    {
+      "Name": "Posture",
+      "Default": 10
+    },
+    {
+      "Name": "HealthRegeneration",
+      "Default": 1
+    },
+    {
+      "Name": "ManaRegeneration",
+      "Default": 1
+    },
+    {
+      "Name": "StaminaRegeneration",
+      "Default": 1
+    },
+    {
+      "Name": "FireResistance"
+    },
+    {
+      "Name": "LightningResistance"
+    },
+    {
+      "Name": "ArcaneResistance"
+    },
+    {
+      "Name": "PhysicalResistance"
+    }
+  ]
+}

@@ -4,36 +4,40 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"html/template"
 	"os"
+	"text/template"
 )
 
 type Attribute struct {
 	Name             string
 	Default          float32
 	MaxAttributeName string
+	Comment          string
 }
 
 type AttributeSet struct {
-	ModuleName      string
-	ClassName       string
-	ParentClassName string
-	TagPrefix       string
-	Category        string
-	CopyRight       string
-	FileName        string
-	HeaderIncludes  []string
-	CppIncludes     []string
-	Attributes      []Attribute
+	ModuleName            string
+	ClassName             string
+	UseAttributeHelper    bool
+	ParentClassName       string
+	TagPrefix             string
+	Category              string
+	CopyRight             string
+	FileName              string
+	HeaderOutputDirectory string
+	CppOutputDirectory    string
+	HeaderIncludes        []string
+	CppIncludes           []string
+	Attributes            []Attribute
 }
 
 func (Set AttributeSet) GetOutputHeaderFilePath() string {
-	return fmt.Sprintf("%s.h", Set.FileName)
+	return fmt.Sprintf("%s/%s.h", Set.HeaderOutputDirectory, Set.FileName)
 }
 
 func (Set AttributeSet) GetOutputCppFilePath() string {
 
-	return fmt.Sprintf("%s.cpp", Set.FileName)
+	return fmt.Sprintf("%s/%s.cpp", Set.CppOutputDirectory, Set.FileName)
 }
 
 func ParseJSONFile(filePath string) (AttributeSet, error) {
@@ -82,7 +86,7 @@ func main() {
 			}
 
 			// 创建生成文件
-			outputHeaderFile, err := os.Create(fmt.Sprintf("%s.h", attributeSet.ClassName))
+			outputHeaderFile, err := os.Create(attributeSet.GetOutputHeaderFilePath())
 			if err != nil {
 				fmt.Println("Failed to create output file:", err)
 				return
@@ -107,7 +111,7 @@ func main() {
 			}
 
 			// 创建生成文件
-			outputCppFile, err := os.Create(fmt.Sprintf("%s.cpp", attributeSet.ClassName))
+			outputCppFile, err := os.Create(attributeSet.GetOutputCppFilePath())
 			if err != nil {
 				fmt.Println("Failed to create output file:", err)
 				return

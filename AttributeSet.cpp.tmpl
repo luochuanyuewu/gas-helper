@@ -1,15 +1,28 @@
 {{.CopyRight}}
-
 {{ range .CppIncludes }}
 #include "{{.}}"
 {{ end }}
+#include "Net/UnrealNetwork.h"
 #include "AbilitySystemBlueprintLibrary.h"
+{{ if eq .UseAttributeHelper true }}
+#include "Attributes/GGA_GameplayTagToAttributeHelper.h"
+{{ end }}
 
 namespace {{.ClassName}}
 {
 {{ range .Attributes }}
-    UE_DEFINE_GAMEPLAY_TAG({{.Name}}, TEXT("{{ $.TagPrefix }}{{.Name}}"))
+    UE_DEFINE_GAMEPLAY_TAG_COMMENT({{.Name}}, TEXT("{{ $.TagPrefix }}{{.Name}}"), "{{.Comment}}")
 {{ end }}
+}
+
+U{{.ClassName}}::U{{.ClassName}}()
+{
+{{ if eq .UseAttributeHelper true }}
+{{ range .Attributes }}
+    UGGA_GameplayTagToAttributeHelper::RegisterTagToAttribute({{$.ClassName}}::{{.Name}},Get{{.Name}}Attribute());
+{{ end }}
+{{ end }}
+
 }
 
 void U{{.ClassName}}::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -56,11 +69,6 @@ void U{{ $.ClassName }}::AdjustAttributeForMaxChange(FGameplayAttributeData& Aff
 FGameplayAttribute U{{ $.ClassName }}::Bp_Get{{ .Name }}Attribute()
 {
     return ThisClass::Get{{ .Name }}Attribute();
-}
-
-FGameplayTag U{{ $.ClassName }}::Bp_Get{{ .Name }}AttributeTag()
-{
-return {{$.ClassName}}::{{.Name}};
 }
 
 float U{{ $.ClassName }}::Get{{.Name}}AttributeFromActor(const AActor* Actor, bool& bSuccessfullyFoundAttribute)

@@ -1,6 +1,11 @@
 {{.CopyRight}}
 
 #pragma once
+
+#include "CoreMinimal.h"
+#include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
+#include "NativeGameplayTags.h"
 {{ range .HeaderIncludes }}
 #include "{{.}}"
 {{ end }}
@@ -13,49 +18,50 @@ namespace {{.ClassName}}
 	{{ end }}
 }
 
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
 UCLASS()
 class {{ .ModuleName }}_API U{{ .ClassName }} : public U{{.ParentClassName}}
 {
 	GENERATED_BODY()
 
+
 public:
+
+	U{{.ClassName}}();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
-
 	{{ range .Attributes }}
+	// {{.Comment}}
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_{{ .Name }}, Category = "{{ $.Category }}", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData {{ .Name }}{ {{ if ne .Default 0.0 }}{{ .Default }}{{ else }}0.0{{ end }} };
 	ATTRIBUTE_ACCESSORS(ThisClass, {{ .Name }})
-
 	{{ end }}
 
 	{{ range .Attributes }}
-	UFUNCTION()
-
 	UFUNCTION(BlueprintPure,meta=(DisplayName="Get{{.Name}}Attribute"), Category = "{{ $.Category }}")
 	static FGameplayAttribute Bp_Get{{.Name}}Attribute();
 
-	UFUNCTION(BlueprintPure,meta=(DisplayName="Get{{.Name}}AttributeTag"), Category = "{{ $.Category }}")
-	static FGameplayTag Bp_Get{{.Name}}AttributeTag();
-
-	/** Returns the value of {{.Name}} Attribute from the ability system component belonging to Actor. */
-	UFUNCTION(BlueprintPure, Category = "Ability|Attribute")
+	/**
+	* Returns the value of {{.Name}} Attribute from the ability system component belonging to Actor.
+	* 从Actor的Ability System Component中获取{{.Name}}属性的当前值。
+	*/
+	UFUNCTION(BlueprintPure, Category = "{{ $.Category }}")
 	static float Get{{.Name}}AttributeFromActor(const AActor* Actor,bool& bSuccessfullyFoundAttribute);
-
 	{{ end }}
-
 protected:
 
 	/** Helper function to proportionally adjust the value of an attribute when it's associated max attribute changes. (i.e. When MaxHealth increases, Health increases by an amount that maintains the same percentage as before) */
 	virtual void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
-
-
 {{ range .Attributes }}
 	UFUNCTION()
 	virtual void OnRep_{{ .Name }}(const FGameplayAttributeData& OldValue) const;
-
 	{{ end }}
 };

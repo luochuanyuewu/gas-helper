@@ -1,0 +1,39 @@
+{
+  "ModuleName": "ACTIONRPG",
+  "ClassName": "AS_Health",
+  "ParentClassName": "AttributeSet",
+  "TagPrefix": "ARPG.Attribute.HealthSet.",
+  "Category": "Attribute|HealthSet",
+  "FileName": "AS_Health",
+  "CopyRight": "// GAS AttributeSet 自动生成",
+  "HeaderOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Public/Attributes",
+  "CppOutputDirectory": "F:/Unreal/GenericGame/Plugins/GameFeatures/ActionRPG/Source/ActionRPG/Private/Attributes",
+  "HeaderIncludes": [
+  ],
+  "CppIncludes": [
+    "Attributes/AS_Health.h"
+  ],
+  "Attributes": [
+    {
+      "Name": "Health",
+      "Default": 100,
+      "MaxAttributeName": "MaxHealth",
+      "Comment": "Current health of an actor.(actor的当前生命值)"
+    },
+    {
+      "Name": "MaxHealth",
+      "Default": 100,
+      "Comment": "Max health value of an actor.(actor的最大生命值)"
+    },
+    {
+      "Name": "Healing",
+      "Default": 0,
+      "Comment": "Incoming healing. This is mapped directly to +Health.(即将到来的恢复值，映射为+Health)"
+    },
+    {
+      "Name": "Damage",
+      "Default": 0,
+      "Comment": "Incoming damage. This is mapped directly to -Health(即将到来的伤害值，映射为-Health)"
+    }
+  ]
+}
